@@ -38,7 +38,12 @@ namespace VoxelbasedCom.MarchingCubes
         /// The generated vertices
         /// </summary>
         [NativeDisableParallelForRestriction, WriteOnly] public NativeArray<float3> vertices;
-
+        
+        /// <summary>
+        /// The generated normals
+        /// </summary>
+        [NativeDisableParallelForRestriction, WriteOnly] public NativeArray<float3> normals;
+        
         /// <summary>
         /// The generated triangles
         /// </summary>
@@ -72,20 +77,37 @@ namespace VoxelbasedCom.MarchingCubes
 
             // Index at the beginning of the row
             int rowIndex = 15 * cubeIndex;
+            float3 normal = GetNormal(densities);
 
             for (int i = 0; Tables.TriangleTable[rowIndex + i] != -1 && i < 15; i += 3)
             {
                 int triangleIndex = counter.Increment() * 3;
-
                 vertices[triangleIndex + 0] = vertexList[Tables.TriangleTable[rowIndex + i + 0]];
                 indices[triangleIndex + 0] = triangleIndex + 0;
+                normals[triangleIndex + 0] = normal;
 
                 vertices[triangleIndex + 1] = vertexList[Tables.TriangleTable[rowIndex + i + 1]];
                 indices[triangleIndex + 1] = triangleIndex + 1;
+                normals[triangleIndex + 1] = normal;
 
                 vertices[triangleIndex + 2] = vertexList[Tables.TriangleTable[rowIndex + i + 2]];
                 indices[triangleIndex + 2] = triangleIndex + 2;
+                normals[triangleIndex + 2] = normal;
             }
+        }
+
+        /// <summary>
+        /// Gets the normal for a given voxel
+        /// </summary>
+        /// <param name="voxelDensities">The voxel's densities</param>
+        /// <returns>The densities of that voxel</returns>
+        private float3 GetNormal(VoxelCorners<float> densities){
+            float3 normal = float3.zero;
+            for(int i = 0; i < 8; i++){
+                normal += ((float3)Tables.CubeCorners[i] - .5f) * densities[i];
+            }
+            normal = math.normalizesafe(normal);
+            return normal;
         }
 
         /// <summary>

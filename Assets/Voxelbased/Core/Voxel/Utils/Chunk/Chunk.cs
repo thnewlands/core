@@ -132,7 +132,7 @@ namespace VoxelbasedCom
             
             mesh.uv = new Vector2[vertexCount];
             if(data.normals != null)
-                //mesh.SetNormals(data.normals);
+                mesh.SetNormals(data.normals, 0, vertexCount);
 
             meshFilter.mesh = mesh;
             meshCollider.sharedMesh = mesh;

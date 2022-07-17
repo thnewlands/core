@@ -18,6 +18,7 @@ namespace VoxelbasedCom.MarchingCubes
             {
                 vertices = new NativeArray<float3>(chunkSize * chunkSize * chunkSize * 5 * 3, Allocator.Persistent, NativeArrayOptions.UninitializedMemory),
                 triangles = new NativeArray<int>(chunkSize * chunkSize * chunkSize * 5 * 3, Allocator.Persistent, NativeArrayOptions.UninitializedMemory),
+                normals = new NativeArray<float3>(chunkSize * chunkSize * chunkSize * 5 * 3, Allocator.Persistent, NativeArrayOptions.UninitializedMemory),
                 counter = new Counter(Allocator.Persistent)
 
             };
@@ -37,7 +38,8 @@ namespace VoxelbasedCom.MarchingCubes
                 isolevel = IsoLevel,
                 counter = meshData.counter,
                 indices = meshData.triangles,
-                vertices = meshData.vertices
+                vertices = meshData.vertices,
+                normals = meshData.normals
             };
             meshingHandle = marchingCubesJob.Schedule(chunkSize * chunkSize * chunkSize, 64, inputDeps);
             return meshingHandle;
